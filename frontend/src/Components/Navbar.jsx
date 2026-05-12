@@ -1,66 +1,98 @@
-import React from 'react';
-import { IoMdMoon } from "react-icons/io";
+import React, { useState, useEffect } from 'react';
 import { FaUser } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const token = localStorage.getItem('token');
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         navigate('/login');
     };
 
+    const navLinks = [
+        { path: '/', label: 'Home' },
+        { path: '/studio', label: 'Studio' },
+        { path: '/about', label: 'About' },
+        { path: '/contact', label: 'Contact' }
+    ];
+
     return (
-        <div className="nav flex items-center justify-between px-4 md:px-8 lg:px-[120px] h-[70px] bg-gradient-to-r from-gray-900 to-black border-b border-gray-800">
-            <div className="logo">
-                <Link to="/">
-                    <h3 className='text-2xl font-bold bg-gradient-to-br from-rose-800 via-blue-700 to-rose-900 bg-clip-text text-transparent'>Nirvana-Ai</h3>
-                </Link>
-            </div>
-            <div className="pages hidden md:block">
-                <ul className='flex font-semibold items-center gap-8 text-gray-300'>
-                    <li className='hover:text-purple-400 transition-colors cursor-pointer'>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li className='hover:text-purple-400 transition-colors cursor-pointer'>
-                        <Link to="/about">About</Link>
-                    </li>
-                    <li className='hover:text-purple-400 transition-colors cursor-pointer'>
-                        <Link to="/contact">Contact-Us</Link>
-                    </li>
-                </ul>
-            </div>
-            <div className="icons flex items-center gap-4">
-                <button className="p-2 rounded-full hover:bg-gray-800 transition-colors duration-300 text-gray-300 hover:text-purple-400">
-                    <IoMdMoon className="text-xl" />
-                </button>
-
-                {token ? (
-                    <button
-                        onClick={handleLogout}
-                        className="px-4 py-2 text-sm font-semibold bg-red-600/20 text-red-400 border border-red-600/50 rounded-lg hover:bg-red-600 hover:text-white transition-all"
-                    >
-                        Logout
-                    </button>
-                ) : (
-                    <div className="flex items-center gap-3">
-                        <Link to="/login" className="px-4 py-2 text-sm font-semibold text-gray-300 hover:text-white transition-colors">
-                            Login
+        <motion.nav 
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className={`fixed top-0 left-0 w-full z-50 flex justify-center transition-all duration-500 ${scrolled ? 'pt-4' : 'pt-8'}`}
+        >
+            <div className={`glass-pill flex items-center justify-between px-6 transition-all duration-500 ${scrolled ? 'py-3 w-[95%] max-w-5xl bg-[rgba(5,5,5,0.8)] shadow-[0_0_30px_rgba(0,0,0,0.5)]' : 'py-4 w-[90%] max-w-6xl'}`}>
+                
+                {/* Logo */}
+                <div className="logo group">
+                    <Link to="/" className="flex items-center gap-2">
+                        <motion.div 
+                            whileHover={{ rotate: 180, scale: 1.1 }}
+                            transition={{ duration: 0.5 }}
+                            className="w-6 h-6 rounded-full bg-white flex items-center justify-center overflow-hidden"
+                        >
+                            <div className="w-3 h-3 bg-black rounded-full" />
+                        </motion.div>
+                        <h3 className='text-xl font-display font-bold text-white tracking-[0.2em] group-hover:text-shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all'>
+                            NIRVANA
+                        </h3>
+                    </Link>
+                </div>
+                
+                {/* Desktop Links */}
+                <div className="pages hidden md:block">
+                    <ul className='flex items-center gap-8'>
+                        {navLinks.map((link) => {
+                            const isActive = location.pathname === link.path;
+                            return (
+                                <li key={link.path} className="relative group">
+                                    <Link 
+                                        to={link.path} 
+                                        className={`text-xs font-mono tracking-widest uppercase transition-colors duration-300 ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'}`}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                    {isActive && (
+                                        <motion.div 
+                                            layoutId="nav-indicator"
+                                            className="absolute -bottom-2 left-0 right-0 h-[2px] bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+                                        />
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
+                
+                {/* Actions */}
+                <div className="icons flex items-center gap-4">
+                    {token ? (
+                        <button onClick={handleLogout} className="text-xs font-mono tracking-widest text-gray-400 hover:text-white transition-colors uppercase">
+                            Logout
+                        </button>
+                    ) : (
+                        <Link to="/login" className="pill-btn pill-btn-primary flex items-center gap-2 text-xs font-mono tracking-widest uppercase">
+                            Sign In <FaUser className="text-[10px]" />
                         </Link>
-                        <Link to="/signup" className="px-4 py-2 text-sm font-semibold bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all shadow-lg shadow-purple-900/20">
-                            Sign Up
-                        </Link>
-                    </div>
-                )}
-
-                <a href="https://github.com" target="_blank" rel="noreferrer" className="p-2 rounded-full hover:bg-gray-800 transition-colors duration-300 text-gray-300 hover:text-white">
-                    <FaGithub className='text-xl' />
-                </a>
+                    )}
+                </div>
             </div>
-        </div>
+        </motion.nav>
     );
 }
 

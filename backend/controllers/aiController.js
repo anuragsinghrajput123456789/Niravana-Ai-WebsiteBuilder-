@@ -1,21 +1,18 @@
-const { GoogleGenAI } = require('@google/genai');
-
 const generateWebsite = async (req, res) => {
     try {
-        const { prompt } = req.body;
+        const { prompt, systemOverride } = req.body;
 
         if (!prompt) {
             return res.status(400).json({ message: 'Prompt is required' });
         }
 
-        const apiKey = process.env.GEMINI_API_KEY;
+        const apiKey = process.env.OPENROUTER_API_KEY;
         if (!apiKey) {
-             return res.status(500).json({ message: 'GEMINI_API_KEY is not configured in backend' });
+            console.error('OPENROUTER_API_KEY missing from environment');
+            return res.status(500).json({ message: 'OPENROUTER_API_KEY is not configured in backend' });
         }
 
-        const ai = new GoogleGenAI({ apiKey });
-
-        const text_prompt = `You are an expert frontend developer and UI/UX designer. The user will provide a detailed prompt describing what kind of website they want. Based on the user’s description, generate a fully working, production-ready website as a **single HTML file**. Use only **HTML, Tailwind CSS (via CDN)**, vanilla JavaScript, and GSAP (via CDN).
+        const systemPrompt = `You are an expert frontend developer and UI/UX designer. The user will provide a detailed prompt describing what kind of website they want. Based on the user's description, generate a fully working, production-ready website as a **single HTML file**. Use only **HTML, Tailwind CSS (via CDN)**, vanilla JavaScript, and GSAP (via CDN).
 
 Strict output rules:
 - Return the website as a single fenced Markdown code block with the language tag \`\`\`html.
@@ -37,27 +34,70 @@ Technical requirements:
 6. **UI Sections** (as per user request):
     - Sticky **Navbar** with logo + links + theme toggle.
     - **Hero section** with headline, subheadline, CTA button, and background image/gradient.
-    - **Main content**: features grid, product showcase, gallery, blog cards, or whatever fits user’s request.
+    - **Main content**: features grid, product showcase, gallery, blog cards, or whatever fits user's request.
     - **Call to Action** with strong button.
-    - **Footer** with the text: "Made with WebBuilder"
+    - **Footer** with the text: "Made with NirvanaAI"
 7. **Code quality**: Clean, semantic HTML5, ARIA labels for accessibility, well-indented, professional Tailwind usage.
 8. **Performance**: Optimized. No external CSS/JS frameworks beyond Tailwind + GSAP. Use responsive images, gradients, inline SVGs, or Unsplash placeholders.
 
-Final instruction: Output only the single fenced Markdown code block with the full HTML file content. Nothing else.
+Final instruction: Output only the single fenced Markdown code block with the full HTML file content. Nothing else.`;
 
-Website prompt: ${prompt}`;
-
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: text_prompt,
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'HTTP-Referer': 'http://localhost:5173',
+                'X-OpenRouter-Title': 'NirvanaMax Website Builder',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                model: 'openai/gpt-4o',
+                messages: [
+                    {
+                        role: 'system',
+                        content: systemOverride || systemPrompt,
+                    },
+                    {
+                        role: 'user',
+                        content: `${systemOverride ? '' : 'Website prompt: '}${prompt}`,
+                    },
+                ],
+                max_tokens: 3500,
+                temperature: 0.7,
+            }),
         });
 
-        const generatedText = response.text ? response.text() : "";
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('OpenRouter API Error:', response.status, errorText);
+            throw new Error(`OpenRouter API Error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const data = await response.json();
+
+        // Handle OpenRouter error responses (sometimes 200 but with error field)
+        if (data.error) {
+            throw new Error(`OpenRouter Error: ${data.error.message || JSON.stringify(data.error)}`);
+        }
+
+        const choices = data.choices || [];
+        if (choices.length === 0) {
+            throw new Error('No choices returned from OpenRouter API');
+        }
+
+        const generatedText = choices[0]?.message?.content || '';
+        if (!generatedText) {
+            throw new Error('Empty content returned from OpenRouter API');
+        }
+
         res.status(200).json({ result: generatedText });
 
     } catch (error) {
-        console.error("AI Generation Error:", error);
-        res.status(500).json({ message: 'AI Generation Failed', error: error.message });
+        console.error('AI Generation Error:', error.message);
+        res.status(500).json({
+            message: 'AI Generation Failed: ' + (error.message || 'Unknown error'),
+            error: error.message,
+        });
     }
 };
 

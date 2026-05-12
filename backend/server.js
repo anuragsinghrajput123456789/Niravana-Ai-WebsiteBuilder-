@@ -8,26 +8,60 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(express.json());
-app.use(cors());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 
-// Routes placeholder
+// CORS — allow frontend dev server and production origins
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (curl, Postman, server-to-server)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error(`CORS: Origin ${origin} not allowed`));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// Health check route
+app.get('/', (req, res) => {
+    res.json({ status: 'ok', message: 'NirvanaMax API is running' });
+});
+
+// Routes
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const aiRoutes   = require('./routes/aiRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
-app.use('/api/ai', require('./routes/aiRoutes')); // Register AI routes
+app.use('/api/ai',   aiRoutes);
 
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err.message);
+    res.status(500).json({ message: err.message || 'Internal Server Error' });
+});
+
+// Connect to MongoDB, then start server
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+    .connect(process.env.MONGO_URI)
     .then(() => {
-        console.log('MongoDB connected');
-        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+        console.log('✅ MongoDB connected');
+        app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
     })
-    .catch((err) => console.log(err));
-
-app.get('/', (req, res) => {
-    res.send('API is running...');
-});
+    .catch((err) => {
+        console.error('❌ MongoDB connection failed:', err.message);
+        process.exit(1);
+    });
