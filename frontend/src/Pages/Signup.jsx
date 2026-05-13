@@ -16,7 +16,7 @@ const Signup = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await API.post('/auth/register', { name, email, password });
+            await API.post('/auth/signup', { name, email, password });
             toast.success('Registration Successful! Please login.');
             navigate('/login');
         } catch (error) {

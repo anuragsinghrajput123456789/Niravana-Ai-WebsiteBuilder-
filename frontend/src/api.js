@@ -3,7 +3,7 @@ import axios from 'axios';
 const API = axios.create({
     // In production, VITE_API_URL is set to the Render backend URL.
     // Falls back to localhost for local development.
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+    baseURL: (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, "") : 'http://localhost:5000/api'),
 });
 
 // Add a request interceptor to include the token in headers
