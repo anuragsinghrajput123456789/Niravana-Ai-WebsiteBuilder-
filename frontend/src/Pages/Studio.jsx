@@ -85,20 +85,21 @@ const Studio = () => {
         return match ? match[1].trim() : response.trim();
     };
 
-    const handleGenerate = async () => {
+    const handleGenerate = async (isUpdate = false) => {
         if (!prompt.trim()) {
             toast.error("Please describe what you want to build.");
             return;
         }
 
         setLoading(true);
-        setLoadingState('Analyzing prompt...');
+        setLoadingState(isUpdate ? 'Analyzing update request...' : 'Analyzing prompt...');
         
         try {
             setTimeout(() => setLoadingState('Synthesizing React components...'), 1500);
             setTimeout(() => setLoadingState('Applying Tailwind utility classes...'), 3000);
             
-            const { data } = await generateWebsite(prompt);
+            const currentCode = isUpdate ? code : null;
+            const { data } = await generateWebsite(prompt, currentCode);
             const generatedCode = extractCode(data.result);
             setCode(generatedCode);
             
@@ -106,9 +107,9 @@ const Studio = () => {
                 await saveChat({ prompt, code: generatedCode });
                 fetchHistory();
             }
-            toast.success("Generation complete!");
+            toast.success(isUpdate ? "Code updated successfully!" : "Generation complete!");
         } catch (error) {
-            toast.error("Failed to generate code.");
+            toast.error(isUpdate ? "Failed to update code." : "Failed to generate code.");
         } finally {
             setLoading(false);
         }
@@ -275,11 +276,18 @@ const Studio = () => {
                                         <BsStars />
                                     </button>
                                     <button 
-                                        onClick={handleGenerate}
+                                        onClick={() => handleGenerate(false)}
                                         disabled={loading || !prompt}
                                         className="flex items-center gap-2 px-6 py-2.5 bg-white text-black text-sm font-bold rounded-lg hover:scale-105 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed transition-all"
                                     >
                                         <BsPlayFill className="text-lg" /> Generate
+                                    </button>
+                                    <button 
+                                        onClick={() => handleGenerate(true)}
+                                        disabled={loading || !prompt || code === DEFAULT_CODE}
+                                        className="flex items-center gap-2 px-6 py-2.5 bg-white/10 text-white text-sm font-bold rounded-lg hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                    >
+                                        <BsStars className="text-lg" /> Update
                                     </button>
                                 </div>
                             </div>

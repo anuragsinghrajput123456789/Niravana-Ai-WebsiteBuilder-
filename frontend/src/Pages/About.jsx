@@ -42,7 +42,7 @@ const About = () => {
             </div>
             
             <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden glass-card group">
-              <img src={heroBg} alt="Mission" className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-700 mix-blend-luminosity" />
+              <img src={heroBg} alt="Mission" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700 grayscale group-hover:grayscale-0" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
             </div>
           </div>

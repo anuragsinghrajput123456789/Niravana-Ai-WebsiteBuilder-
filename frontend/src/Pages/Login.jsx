@@ -27,7 +27,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-[var(--bg-primary)] text-white p-4 relative overflow-hidden">
+        <div className="flex items-center justify-center min-h-screen bg-[var(--bg-primary)] text-white p-4 relative overflow-hidden group">
             {/* Background Accents */}
             <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-[var(--brand-red)] opacity-[0.04] blur-[100px] rounded-full pointer-events-none z-0"></div>
 
@@ -50,7 +50,7 @@ const Login = () => {
                         repeat: Infinity, 
                         ease: "easeInOut" 
                     }}
-                    className="w-full h-full object-contain grayscale blur-[4px]"
+                    className="w-full h-full object-contain grayscale blur-[4px] group-hover:grayscale-0 group-hover:blur-[2px] transition-all duration-1000"
                 />
             </motion.div>
 

@@ -1,6 +1,6 @@
 const generateWebsite = async (req, res) => {
     try {
-        const { prompt, systemOverride } = req.body;
+        const { prompt, systemOverride, currentCode } = req.body;
 
         if (!prompt) {
             return res.status(400).json({ message: 'Prompt is required' });
@@ -59,7 +59,9 @@ Final instruction: Output only the single fenced Markdown code block with the fu
                     },
                     {
                         role: 'user',
-                        content: `${systemOverride ? '' : 'Website prompt: '}${prompt}`,
+                        content: currentCode
+                            ? `Here is the current HTML code:\n\`\`\`html\n${currentCode}\n\`\`\`\n\nPlease update and modify the above code based on this request: ${prompt}`
+                            : `${systemOverride ? '' : 'Website prompt: '}${prompt}`,
                     },
                 ],
                 max_tokens: 3500,

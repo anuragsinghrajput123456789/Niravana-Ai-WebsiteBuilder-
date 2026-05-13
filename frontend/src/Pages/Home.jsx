@@ -22,7 +22,7 @@ const Home = () => {
     };
 
     return (
-        <div className="bg-[var(--bg-primary)] min-h-screen relative overflow-hidden">
+        <div className="bg-[var(--bg-primary)] min-h-screen relative overflow-hidden group">
             
             {/* Cinematic Backgrounds */}
             <div className="aurora-bg"></div>
@@ -48,7 +48,7 @@ const Home = () => {
                         repeat: Infinity, 
                         ease: "easeInOut" 
                     }}
-                    className="w-full h-full object-contain grayscale blur-[4px]"
+                    className="w-full h-full object-contain grayscale blur-[4px] group-hover:grayscale-0 group-hover:blur-[2px] transition-all duration-1000"
                 />
             </motion.div>
 
@@ -103,7 +103,7 @@ const Home = () => {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="mt-20 w-full max-w-6xl glass-card border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative"
+                    className="mt-20 w-full max-w-6xl glass-card border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative group"
                 >
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 z-10 pointer-events-none"></div>
                     <div className="h-10 bg-black/40 border-b border-white/5 flex items-center px-4 gap-2 backdrop-blur-md">
@@ -112,9 +112,9 @@ const Home = () => {
                         <div className="w-3 h-3 rounded-full bg-white/20"></div>
                     </div>
                     <div className="h-[400px] md:h-[600px] w-full bg-black/80 relative flex items-center justify-center">
-                        <img src={heroBg} alt="Interface Preview" className="w-full h-full object-cover opacity-30 grayscale" />
+                        <img src={heroBg} alt="Interface Preview" className="w-full h-full object-cover opacity-30 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700" />
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="glass-panel p-6 rounded-xl border border-white/10 backdrop-blur-xl">
+                            <div className="glass-panel p-6 rounded-xl border border-white/10 backdrop-blur-xl group-hover:border-[var(--brand-red)] group-hover:shadow-[0_0_50px_rgba(255,0,0,0.2)] transition-all duration-500">
                                 <pre className="text-sm font-mono text-gray-300">
                                     <code className="text-gray-500">{"// Nirvana AI Generator"}</code><br/>
                                     <span className="text-purple-400">const</span> App = <span className="text-blue-400">await</span> generate({`{`}<br/>
@@ -141,81 +141,172 @@ const Home = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Feature 1 */}
-                        <div className="glass-card p-8 group">
-                            <div className="w-12 h-12 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center mb-6 group-hover:bg-white transition-colors duration-500">
-                                <BsStars className="text-xl text-gray-300 group-hover:text-black transition-colors duration-500" />
+                        <motion.div 
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                            className="glass-card p-8 group hover:-translate-y-2 transition-all duration-300"
+                        >
+                            <div className="w-12 h-12 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center mb-6 group-hover:bg-[var(--brand-red)] transition-colors duration-500">
+                                <BsStars className="text-xl text-gray-300 group-hover:text-white transition-colors duration-500" />
                             </div>
                             <h3 className="text-xl font-display font-bold mb-3">AI Code Generation</h3>
                             <p className="text-gray-500 font-light leading-relaxed">
                                 Our proprietary models understand context and design systems, generating perfectly structured React components from simple descriptions.
                             </p>
-                        </div>
+                        </motion.div>
+                        
                         {/* Feature 2 */}
-                        <div className="glass-card p-8 group">
-                            <div className="w-12 h-12 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center mb-6 group-hover:bg-white transition-colors duration-500">
-                                <BsCodeSlash className="text-xl text-gray-300 group-hover:text-black transition-colors duration-500" />
+                        <motion.div 
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                            className="glass-card p-8 group hover:-translate-y-2 transition-all duration-300"
+                        >
+                            <div className="w-12 h-12 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center mb-6 group-hover:bg-[var(--brand-red)] transition-colors duration-500">
+                                <BsCodeSlash className="text-xl text-gray-300 group-hover:text-white transition-colors duration-500" />
                             </div>
                             <h3 className="text-xl font-display font-bold mb-3">Live Preview Workspace</h3>
                             <p className="text-gray-500 font-light leading-relaxed">
                                 See your code render in real-time. Switch seamlessly between mobile, tablet, and desktop views within the integrated browser canvas.
                             </p>
-                        </div>
+                        </motion.div>
+                        
                         {/* Feature 3 */}
-                        <div className="glass-card p-8 group">
-                            <div className="w-12 h-12 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center mb-6 group-hover:bg-white transition-colors duration-500">
-                                <BsLightningCharge className="text-xl text-gray-300 group-hover:text-black transition-colors duration-500" />
+                        <motion.div 
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                            className="glass-card p-8 group hover:-translate-y-2 transition-all duration-300"
+                        >
+                            <div className="w-12 h-12 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center mb-6 group-hover:bg-[var(--brand-red)] transition-colors duration-500">
+                                <BsLightningCharge className="text-xl text-gray-300 group-hover:text-white transition-colors duration-500" />
                             </div>
                             <h3 className="text-xl font-display font-bold mb-3">Instant Export</h3>
                             <p className="text-gray-500 font-light leading-relaxed">
                                 Take ownership of your code. Export clean, production-ready HTML, Tailwind CSS, and React JSX files instantly.
                             </p>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </section>
 
             {/* How It Works Section */}
-            <section className="py-32 px-6 bg-[#020202] border-y border-white/5 relative z-10">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col md:flex-row items-center gap-16">
-                        <div className="w-full md:w-1/2">
-                            <h2 className="text-4xl md:text-5xl font-display font-bold mb-8 leading-tight">From Concept to Code in 3 Steps</h2>
-                            <div className="space-y-12">
-                                <div className="flex gap-6">
-                                    <div className="flex-shrink-0 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center font-mono text-xl">1</div>
-                                    <div>
+            <section className="py-32 px-6 bg-[var(--bg-primary)] border-y border-white/5 relative z-10 overflow-hidden">
+                {/* Background Glow */}
+                <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-[var(--brand-red)] opacity-[0.05] blur-[150px] rounded-full pointer-events-none -translate-y-1/2"></div>
+                
+                <div className="max-w-7xl mx-auto relative z-10">
+                    <div className="flex flex-col lg:flex-row items-center gap-16">
+                        
+                        <div className="w-full lg:w-1/2">
+                            <motion.h2 
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.3 }}
+                                className="text-4xl md:text-5xl font-display font-bold mb-12 leading-tight"
+                            >
+                                From Concept to Code <br/><span className="text-[var(--brand-red)]">in 3 Steps</span>
+                            </motion.h2>
+                            
+                            <div className="space-y-6">
+                                {/* Step 1 */}
+                                <motion.div 
+                                    initial={{ opacity: 0, x: -30 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true, amount: 0.3 }}
+                                    transition={{ duration: 0.5, delay: 0.1 }}
+                                    className="flex gap-6 group/step"
+                                >
+                                    <div className="flex-shrink-0 w-12 h-12 rounded-full border border-white/20 bg-black/50 flex items-center justify-center font-mono text-xl group-hover/step:border-[var(--brand-red)] group-hover/step:text-[var(--brand-red)] group-hover/step:shadow-[0_0_15px_rgba(255,0,0,0.3)] transition-all duration-300">1</div>
+                                    <div className="glass-card p-6 rounded-xl group-hover/step:border-white/20 transition-colors w-full">
                                         <h4 className="text-xl font-bold mb-2">Describe Your Vision</h4>
-                                        <p className="text-gray-500 font-light">Type what you want to build in plain English into the Studio terminal.</p>
+                                        <p className="text-gray-400 font-light text-sm leading-relaxed">Type what you want to build in plain English into the Studio terminal. Be as creative or specific as you need.</p>
                                     </div>
-                                </div>
-                                <div className="flex gap-6">
-                                    <div className="flex-shrink-0 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center font-mono text-xl">2</div>
-                                    <div>
+                                </motion.div>
+                                
+                                {/* Step 2 */}
+                                <motion.div 
+                                    initial={{ opacity: 0, x: -30 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true, amount: 0.3 }}
+                                    transition={{ duration: 0.5, delay: 0.2 }}
+                                    className="flex gap-6 group/step"
+                                >
+                                    <div className="flex-shrink-0 w-12 h-12 rounded-full border border-white/20 bg-black/50 flex items-center justify-center font-mono text-xl group-hover/step:border-[var(--brand-red)] group-hover/step:text-[var(--brand-red)] group-hover/step:shadow-[0_0_15px_rgba(255,0,0,0.3)] transition-all duration-300">2</div>
+                                    <div className="glass-card p-6 rounded-xl group-hover/step:border-white/20 transition-colors w-full">
                                         <h4 className="text-xl font-bold mb-2">AI Synthesis</h4>
-                                        <p className="text-gray-500 font-light">Our engine generates the underlying React architecture, tailwind styles, and logic.</p>
+                                        <p className="text-gray-400 font-light text-sm leading-relaxed">Our engine instantly generates the underlying React architecture, tailwind styles, and logic for your component.</p>
                                     </div>
-                                </div>
-                                <div className="flex gap-6">
-                                    <div className="flex-shrink-0 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center font-mono text-xl">3</div>
-                                    <div>
+                                </motion.div>
+
+                                {/* Step 3 */}
+                                <motion.div 
+                                    initial={{ opacity: 0, x: -30 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true, amount: 0.3 }}
+                                    transition={{ duration: 0.5, delay: 0.3 }}
+                                    className="flex gap-6 group/step"
+                                >
+                                    <div className="flex-shrink-0 w-12 h-12 rounded-full border border-white/20 bg-black/50 flex items-center justify-center font-mono text-xl group-hover/step:border-[var(--brand-red)] group-hover/step:text-[var(--brand-red)] group-hover/step:shadow-[0_0_15px_rgba(255,0,0,0.3)] transition-all duration-300">3</div>
+                                    <div className="glass-card p-6 rounded-xl group-hover/step:border-white/20 transition-colors w-full">
                                         <h4 className="text-xl font-bold mb-2">Iterate & Export</h4>
-                                        <p className="text-gray-500 font-light">Refine the code in the live editor and export it to your local environment.</p>
+                                        <p className="text-gray-400 font-light text-sm leading-relaxed">Refine the code using the live preview workspace, then export it directly to your local environment.</p>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </div>
+
+                        {/* Right: Abstract Visualization */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.8 }}
+                            className="w-full lg:w-1/2 min-h-[450px] glass-card rounded-2xl p-8 relative overflow-hidden flex flex-col justify-center border-white/10 group/viz"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-tr from-[var(--brand-red)]/10 to-transparent opacity-0 group-hover/viz:opacity-100 transition-opacity duration-700"></div>
+                            
+                            {/* Editor Mockup */}
+                            <div className="w-full bg-black/60 rounded-xl border border-white/10 overflow-hidden backdrop-blur-md relative z-10 shadow-2xl group-hover/viz:border-red-500/30 transition-colors duration-500">
+                                <div className="h-8 bg-white/5 border-b border-white/10 flex items-center px-4 gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+                                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+                                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
+                                </div>
+                                <div className="p-6 font-mono text-sm space-y-4">
+                                    <div className="flex items-center text-gray-400 gap-3">
+                                        <span className="text-red-400">~</span> 
+                                        <span className="text-green-400">npm</span> run build
+                                    </div>
+                                    <div className="text-gray-500 italic">Synthesizing components...</div>
+                                    <div className="space-y-2">
+                                        <div className="h-2 w-3/4 bg-blue-500/20 rounded animate-pulse"></div>
+                                        <div className="h-2 w-1/2 bg-purple-500/20 rounded animate-pulse delay-75"></div>
+                                        <div className="h-2 w-5/6 bg-green-500/20 rounded animate-pulse delay-150"></div>
+                                    </div>
+                                    <div className="text-white mt-4 flex items-center gap-2">
+                                        <BsStars className="text-yellow-400" /> Build successful in 1.2s
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="w-full md:w-1/2 h-[500px] glass-panel rounded-2xl p-8 relative overflow-hidden flex flex-col justify-center border-white/10">
-                            {/* Abstract visualization of code generation */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent"></div>
-                            <div className="space-y-4 relative z-10">
-                                <div className="h-4 w-3/4 bg-white/10 rounded animate-pulse"></div>
-                                <div className="h-4 w-1/2 bg-white/10 rounded animate-pulse delay-75"></div>
-                                <div className="h-4 w-5/6 bg-white/10 rounded animate-pulse delay-150"></div>
-                                <div className="h-4 w-full bg-white/10 rounded animate-pulse delay-200"></div>
-                                <div className="h-4 w-2/3 bg-white/10 rounded animate-pulse delay-300"></div>
-                            </div>
-                            <div className="absolute bottom-8 right-8 w-16 h-16 rounded-full bg-white/10 blur-xl"></div>
-                        </div>
+
+                            {/* Floating decorative elements */}
+                            <motion.div 
+                                animate={{ y: [0, -20, 0], rotate: [0, 10, 0] }}
+                                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                                className="absolute top-10 right-10 w-20 h-20 bg-gradient-to-br from-red-500/20 to-transparent rounded-2xl border border-red-500/20 backdrop-blur-md"
+                            />
+                            <motion.div 
+                                animate={{ y: [0, 20, 0], rotate: [0, -10, 0] }}
+                                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                                className="absolute bottom-10 left-10 w-16 h-16 bg-gradient-to-tr from-blue-500/20 to-transparent rounded-full border border-blue-500/20 backdrop-blur-md"
+                            />
+                        </motion.div>
+
                     </div>
                 </div>
             </section>

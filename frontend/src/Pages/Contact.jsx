@@ -5,7 +5,7 @@ import heroBg from '../assets/hero-bg.png';
 
 const Contact = () => {
     return (
-        <div className="min-h-screen bg-[var(--bg-primary)] pt-32 pb-24 relative overflow-hidden">
+        <div className="min-h-screen bg-[var(--bg-primary)] pt-32 pb-24 relative overflow-hidden group">
             
             {/* Background Accent */}
             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[var(--brand-red)] opacity-[0.03] blur-[100px] rounded-full pointer-events-none"></div>
@@ -29,7 +29,7 @@ const Contact = () => {
                         repeat: Infinity, 
                         ease: "easeInOut" 
                     }}
-                    className="w-full h-full object-contain grayscale blur-[4px]"
+                    className="w-full h-full object-contain grayscale blur-[4px] group-hover:grayscale-0 group-hover:blur-[2px] transition-all duration-1000"
                 />
             </motion.div>
 

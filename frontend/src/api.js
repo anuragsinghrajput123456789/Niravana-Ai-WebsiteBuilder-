@@ -18,6 +18,6 @@ export const signup = (formData) => API.post('/auth/signup', formData);
 export const getChats = () => API.get('/chat');
 export const saveChat = (chatData) => API.post('/chat', chatData);
 export const deleteChat = (id) => API.delete(`/chat/${id}`);
-export const generateWebsite = (prompt) => API.post('/ai/generate', { prompt });
+export const generateWebsite = (prompt, currentCode) => API.post('/ai/generate', { prompt, currentCode });
 
 export default API;
