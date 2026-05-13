@@ -12,11 +12,13 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // CORS — allow frontend dev server and production origins
+// Set FRONTEND_URL in your Render environment variables (e.g. https://nirvanamax.vercel.app)
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
     'http://127.0.0.1:5173',
-];
+    process.env.FRONTEND_URL,
+].filter(Boolean); // remove undefined if FRONTEND_URL not set
 
 app.use(cors({
     origin: (origin, callback) => {

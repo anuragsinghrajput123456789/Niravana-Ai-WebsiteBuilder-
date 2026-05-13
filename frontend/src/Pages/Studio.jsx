@@ -12,53 +12,83 @@ const DEFAULT_CODE = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nirvana AI - Default Template</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <title>Nirvana AI Studio</title>
   <style>
-    body { font-family: 'Inter', sans-serif; background-color: #020202; color: #fff; overflow-x: hidden; }
-    .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    .text-gradient { background: linear-gradient(to right, #ff3333, #cc0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .aurora { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(255,0,0,0.1) 0%, transparent 70%); filter: blur(60px); z-index: -1; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #0a0a0a;
+      color: #ffffff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      user-select: none;
+    }
+    .ring {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 51, 51, 0.15);
+      border-top-color: rgba(255, 51, 51, 0.7);
+      animation: spin 1.4s linear infinite;
+    }
+    .ring-outer {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .icon { font-size: 28px; opacity: 0.4; }
+    .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .sublabel {
+      font-size: 12px;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.05em;
+    }
+    .dot-row { display: flex; gap: 6px; }
+    .dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: rgba(255,51,51,0.4);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse { 0%,100%{opacity:0.2;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
   </style>
 </head>
-<body class="min-h-screen relative flex flex-col items-center justify-center p-6">
-  <div class="aurora top-0 left-0"></div>
-  <div class="aurora bottom-0 right-0"></div>
-  
-  <nav class="w-full max-w-6xl flex justify-between items-center py-6 absolute top-0 z-10">
-    <div class="text-2xl font-bold tracking-widest font-serif">NIRVANA<span class="text-red-500">.</span></div>
-    <div class="space-x-8 text-xs font-bold tracking-widest text-gray-500 uppercase">
-      <span class="hover:text-white transition cursor-pointer">Studio</span>
-      <span class="hover:text-white transition cursor-pointer">Docs</span>
-    </div>
-  </nav>
-
-  <main class="w-full max-w-6xl flex flex-col md:flex-row items-center justify-between z-10 mt-12 gap-12">
-    <div class="max-w-xl space-y-6">
-      <div class="inline-block px-4 py-1 rounded-full glass text-xs font-bold tracking-widest text-red-500 uppercase mb-4 border border-red-500/20 shadow-[0_0_15px_rgba(255,0,0,0.1)]">Studio Initialized</div>
-      <h1 class="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight uppercase font-serif">
-        TRY <br/><span class="text-gradient">NIRVANA.</span>
-      </h1>
-      <p class="text-lg text-gray-400 font-light leading-relaxed">
-        Command the Nirvana engine to synthesize your digital reality. Enter a prompt to generate production-ready code.
-      </p>
-    </div>
-    
-    <div class="relative w-full max-w-md flex justify-center items-center">
-      <div class="absolute inset-0 bg-red-900/20 blur-[100px] rounded-full"></div>
-      <div class="w-64 h-64 border border-white/10 rounded-full glass flex items-center justify-center shadow-[0_0_50px_rgba(255,0,0,0.1)] relative z-10 overflow-hidden group">
-         <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 z-10"></div>
-         <span class="text-xs tracking-widest text-white uppercase font-bold z-20 absolute">Awaiting Input</span>
-      </div>
-    </div>
-  </main>
+<body>
+  <div class="ring-outer">
+    <div class="ring"></div>
+  </div>
+  <div class="dot-row">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+  <span class="label">Nirvana Studio</span>
+  <span class="sublabel">Enter a prompt &amp; click Generate</span>
 </body>
 </html>`;
 
 const Studio = () => {
     const [prompt, setPrompt] = useState("");
     const [code, setCode] = useState(DEFAULT_CODE);
+    const [iframeKey, setIframeKey] = useState(0); // increments to force iframe remount on each generation
     const [viewMode, setViewMode] = useState('preview'); // 'preview' | 'code'
     const [deviceMode, setDeviceMode] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
     const [loading, setLoading] = useState(false);
@@ -102,6 +132,7 @@ const Studio = () => {
             const { data } = await generateWebsite(prompt, currentCode);
             const generatedCode = extractCode(data.result);
             setCode(generatedCode);
+            setIframeKey(prev => prev + 1); // force iframe remount so srcDoc always re-applies
             
             if (token) {
                 await saveChat({ prompt, code: generatedCode });
@@ -118,6 +149,7 @@ const Studio = () => {
     const loadHistoryItem = (item) => {
         setPrompt(item.prompt);
         setCode(item.code);
+        setIframeKey(prev => prev + 1); // force iframe remount when loading history
     };
 
     const downloadCode = () => {
@@ -351,9 +383,11 @@ const Studio = () => {
                                       'w-[375px] h-[812px] max-h-full scale-[0.85] origin-top'}`}
                             >
                                 <iframe 
+                                    key={iframeKey}
                                     srcDoc={code} 
                                     className="w-full h-full bg-white"
                                     title="Live Preview"
+                                    sandbox="allow-scripts allow-same-origin allow-forms"
                                 />
                             </motion.div>
                         )}
