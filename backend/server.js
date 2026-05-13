@@ -18,15 +18,19 @@ const allowedOrigins = [
     'http://localhost:3000',
     'http://127.0.0.1:5173',
     process.env.FRONTEND_URL,
-].filter(Boolean); // remove undefined if FRONTEND_URL not set
+].filter(Boolean).map(origin => origin.replace(/\/$/, "")); // Normalize: remove trailing slashes
 
 app.use(cors({
     origin: (origin, callback) => {
         // Allow requests with no origin (curl, Postman, server-to-server)
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin) return callback(null, true);
+        
+        const normalizedOrigin = origin.replace(/\/$/, "");
+        if (allowedOrigins.includes(normalizedOrigin)) {
             callback(null, true);
         } else {
-            callback(new Error(`CORS: Origin ${origin} not allowed`));
+            console.warn(`CORS blocked for origin: ${origin}`);
+            callback(null, false); // Don't throw error, just don't allow
         }
     },
     credentials: true,
