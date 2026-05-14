@@ -25,13 +25,20 @@ app.use(cors({
         if (!origin) return callback(null, true);
         
         const normalizedOrigin = origin.replace(/\/$/, "");
+        
+        // Allow strict matches
         if (allowedOrigins.includes(normalizedOrigin)) {
-            callback(null, true);
-        } else {
-            console.error(`❌ CORS blocked for origin: ${origin}`);
-            console.info(`ℹ️ Allowed origins are: ${allowedOrigins.join(', ')}`);
-            callback(null, false);
+            return callback(null, true);
         }
+        
+        // Allow any Vercel deployment/preview URL for this project
+        if (normalizedOrigin.includes("niravana-ai-website-builder") && normalizedOrigin.endsWith(".vercel.app")) {
+            return callback(null, true);
+        }
+
+        console.error(`❌ CORS blocked for origin: ${origin}`);
+        console.info(`ℹ️ Allowed origins are: ${allowedOrigins.join(', ')}`);
+        callback(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
