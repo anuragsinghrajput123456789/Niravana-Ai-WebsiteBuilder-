@@ -1,9 +1,15 @@
 import axios from 'axios';
 
+const getBaseURL = () => {
+    const rawUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    // Remove trailing slash
+    const cleanUrl = rawUrl.replace(/\/$/, "");
+    // Ensure /api is at the end if it's not already there
+    return cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+};
+
 const API = axios.create({
-    // In production, VITE_API_URL is set to the Render backend URL.
-    // Falls back to localhost for local development.
-    baseURL: (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, "") : 'http://localhost:5000/api'),
+    baseURL: getBaseURL(),
 });
 
 // Add a request interceptor to include the token in headers

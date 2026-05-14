@@ -12,25 +12,25 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // CORS — allow frontend dev server and production origins
-// Set FRONTEND_URL in your Render environment variables (e.g. https://nirvanamax.vercel.app)
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
     'http://127.0.0.1:5173',
     process.env.FRONTEND_URL,
-].filter(Boolean).map(origin => origin.replace(/\/$/, "")); // Normalize: remove trailing slashes
+].filter(Boolean).map(origin => origin.replace(/\/$/, ""));
 
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (curl, Postman, server-to-server)
+        // Allow requests with no origin (like mobile apps or curl)
         if (!origin) return callback(null, true);
         
         const normalizedOrigin = origin.replace(/\/$/, "");
         if (allowedOrigins.includes(normalizedOrigin)) {
             callback(null, true);
         } else {
-            console.warn(`CORS blocked for origin: ${origin}`);
-            callback(null, false); // Don't throw error, just don't allow
+            console.error(`❌ CORS blocked for origin: ${origin}`);
+            console.info(`ℹ️ Allowed origins are: ${allowedOrigins.join(', ')}`);
+            callback(null, false);
         }
     },
     credentials: true,
@@ -59,13 +59,18 @@ app.use((err, req, res, next) => {
 });
 
 // Connect to MongoDB, then start server
-const PORT = process.env.PORT || 5000;
+// Use a fallback for PORT and ensure it's a number
+let PORT = process.env.PORT || 5000;
+if (isNaN(PORT)) {
+    console.warn(`⚠️ Invalid PORT environment variable: "${process.env.PORT}". Defaulting to 5000.`);
+    PORT = 5000;
+}
 
 mongoose
     .connect(process.env.MONGO_URI)
     .then(() => {
         console.log('✅ MongoDB connected');
-        app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+        app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Server running on port ${PORT}`));
     })
     .catch((err) => {
         console.error('❌ MongoDB connection failed:', err.message);
